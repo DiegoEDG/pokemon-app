@@ -1,0 +1,14 @@
+.navbar {
+	display: flex;
+	flex-direction: row;
+	justify-items: center;
+	padding: 0px 50px;
+}
+
+.title {
+	margin-top: 15px;
+}
+
+.favoritos {
+	margin-top: 15px;
+}
