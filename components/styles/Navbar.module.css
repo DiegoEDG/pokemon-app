@@ -11,4 +11,9 @@
 
 .favoritos {
 	margin-top: 15px;
+	margin-right: 30px;
+}
+
+.link {
+	display: contents;
 }
