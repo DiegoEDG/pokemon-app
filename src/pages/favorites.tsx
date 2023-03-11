@@ -1,18 +1,19 @@
-import { FC } from 'react';
+import React, { FC } from 'react';
 import { GetStaticProps } from 'next';
+import { PokemonMinimunData } from '../../interfaces/pokemonDataList';
 import { Grid } from '@nextui-org/react';
 import { MainLayout } from '../../components/layouts';
 import { PokemonCard } from '../../components/ui-elements';
-import { PokemonMinimunData } from '../../interfaces';
+import { getFullPokemonData } from '../../api/pokeApi';
 import { getBasicPokemonData } from '../../utils';
 
 interface Props {
 	pokemons: PokemonMinimunData[];
 }
 
-const Home: FC<Props> = ({ pokemons }) => {
+const Favorites: FC<Props> = ({ pokemons }) => {
 	return (
-		<MainLayout title="Pokemón App">
+		<MainLayout title="Favorites">
 			<Grid.Container justify="flex-start" gap={2}>
 				{pokemons.map((pokemon) => (
 					<PokemonCard pokemon={pokemon} key={pokemon.id} />
@@ -24,6 +25,7 @@ const Home: FC<Props> = ({ pokemons }) => {
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
 	const pokemons = await getBasicPokemonData();
+
 	return {
 		props: {
 			pokemons
@@ -31,4 +33,4 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
 	};
 };
 
-export default Home;
+export default Favorites;

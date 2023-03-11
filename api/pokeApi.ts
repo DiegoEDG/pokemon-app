@@ -7,5 +7,5 @@ export const pokeApi = axios.create({
 
 export const getFullPokemonData = async () => {
 	const { data } = await pokeApi.get<PokemonResponse>('/pokemon?limit=151');
-	return data;
+	return data.results;
 };

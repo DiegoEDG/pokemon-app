@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import { PokemonFullData, PokemonResponse } from '../../../interfaces';
+import { PokemonFullData } from '../../../interfaces';
 import { getFullPokemonData, pokeApi } from '../../../api';
 import { MainLayout } from '../../../components/layouts';
 import { Button, Card, Container, Grid, Text } from '@nextui-org/react';
@@ -65,7 +65,7 @@ export default PokemonPage;
 
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
 	const data = await getFullPokemonData();
-	const pokemonNames = data.results.map((pokemon) => ({ params: { name: pokemon.name } }));
+	const pokemonNames = data.map((pokemon) => ({ params: { name: pokemon.name } }));
 
 	return {
 		paths: pokemonNames,
