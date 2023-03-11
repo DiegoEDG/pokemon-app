@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import { PokemonFullData } from '../../../interfaces';
-import { pokeApi } from '../../../api';
+import { PokemonFullData, PokemonResponse } from '../../../interfaces';
+import { getFullPokemonData, pokeApi } from '../../../api';
 import { MainLayout } from '../../../components/layouts';
 import { Button, Card, Container, Grid, Text } from '@nextui-org/react';
 import Image from 'next/image';
@@ -64,21 +64,27 @@ const PokemonPage: FC<Props> = ({ pokemon }) => {
 export default PokemonPage;
 
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
-	const pokemonPagesId = [...Array(151)].map((ele, idx) => `${idx + 1}`);
+	const data = await getFullPokemonData();
+	const pokemonNames = data.results.map((pokemon) => ({ params: { name: pokemon.name } }));
 
 	return {
-		paths: pokemonPagesId.map((id) => ({ params: { id } })),
+		paths: pokemonNames,
 		fallback: false
 	};
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-	const { id } = params as { id: string };
-	const { data } = await pokeApi.get<PokemonFullData>(`/pokemon/${id}`);
+	const { name } = params as { name: string };
+	const { data } = await pokeApi.get<PokemonFullData>(`/pokemon/${name}`);
+	const necessaryPokemonData = {
+		id: data.id,
+		name: data.name,
+		sprites: data.sprites
+	};
 
 	return {
 		props: {
-			pokemon: data
+			pokemon: necessaryPokemonData
 		}
 	};
 };
