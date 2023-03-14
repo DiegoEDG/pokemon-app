@@ -1,17 +1,35 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import { PokemonFullData } from '../../../interfaces';
+import Image from 'next/image';
+import { Button, Card, Container, Grid, Text } from '@nextui-org/react';
+import { PokemonFullData, PokemonMinimunData } from '../../../interfaces';
 import { getFullPokemonData, pokeApi } from '../../../api';
 import { MainLayout } from '../../../components/layouts';
-import { Button, Card, Container, Grid, Text } from '@nextui-org/react';
-import Image from 'next/image';
+import { toggleFavorite } from '../../../utils';
 
 interface Props {
 	pokemon: PokemonFullData;
 }
 
 const PokemonPage: FC<Props> = ({ pokemon }) => {
+	const [isFavorite, setIsFavorite] = useState<boolean>();
+
+	useEffect(() => {
+		const pokemonsInStorage: PokemonMinimunData[] = JSON.parse(localStorage.getItem('favorites') || '[]');
+		setIsFavorite(findPokemonsInStorage(pokemon, pokemonsInStorage));
+	}, []);
+
+	const findPokemonsInStorage = (pokemon: PokemonFullData, pokemonsInStorage: PokemonMinimunData[]) => {
+		const pokemonsId = pokemonsInStorage.map((pokemon) => pokemon.id);
+		return pokemonsId.includes(pokemon.id);
+	};
+
 	const pokemonNameCapitalized = pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
+
+	const handleFavorite = () => {
+		setIsFavorite(!isFavorite);
+		toggleFavorite(isFavorite!, pokemon);
+	};
 	return (
 		<MainLayout title={`${pokemonNameCapitalized} detail`}>
 			<Grid.Container css={{ display: 'flex', flexDirection: 'row' }} gap={2}>
@@ -34,8 +52,15 @@ const PokemonPage: FC<Props> = ({ pokemon }) => {
 							<Text h3 transform="capitalize">
 								{pokemon.id} - {pokemon.name}
 							</Text>
-							<Button auto color="gradient" rounded ghost css={{ marginBottom: '10px' }}>
-								Add to favorites
+							<Button
+								onPress={handleFavorite}
+								auto
+								color="gradient"
+								rounded
+								ghost={!isFavorite}
+								css={{ marginBottom: '10px' }}
+							>
+								{isFavorite ? 'Favorite' : 'Add to favorites'}
 							</Button>
 						</Card.Header>
 						<Text h3 css={{ marginLeft: '18px' }}>
