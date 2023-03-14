@@ -1,4 +1,3 @@
-import Image from 'next/image';
 export interface PokemonResponse {
 	count: number;
 	next: string;
